@@ -118,3 +118,63 @@ export const getPark = async (
     return handleError(error);
   }
 };
+
+export const updatePark = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const id = event?.pathParameters?.id as string;
+
+    await fetchParkById(id);
+
+    const reqBody = JSON.parse(event?.body as string);
+
+    await schema.validate(reqBody, { abortEarly: false });
+
+    const park = {
+      ...reqBody,
+      parkId: id,
+    };
+
+    await docClient
+      .put({
+        TableName: tableName,
+        Item: park,
+      })
+      .promise();
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(park),
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const deletePark = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const id = event?.pathParameters?.id as string;
+
+    await fetchParkById(id);
+
+    await docClient
+      .delete({
+        TableName: tableName,
+        Key: {
+          parkId: id,
+        },
+      })
+      .promise();
+
+    return {
+      statusCode: 204,
+      body: '',
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};

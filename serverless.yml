@@ -17,6 +17,8 @@ provider:
           Action:
             - dynamodb:PutItem
             - dynamodb:GetItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [ParksTable, Arn]
 
@@ -33,6 +35,18 @@ functions:
       - httpApi:
           path: /park/{id}
           method: get
+  UpdatePark:
+    handler: src/handlers.updatePark
+    events:
+      - httpApi:
+          path: /park/{id}
+          method: put
+  deletePark:
+    handler: src/handlers.deletePark
+    events:
+      - httpApi:
+          path: /park/{id}
+          method: delete
 
 plugins: -serverless-plugin-typescript
 
