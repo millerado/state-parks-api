@@ -16,6 +16,7 @@ provider:
         - Effect: Allow
           Action:
             - dynamodb:PutItem
+            - dynamodb:GetItem
           Resource:
             - Fn::GetAtt: [ParksTable, Arn]
 
@@ -26,6 +27,12 @@ functions:
       - httpApi:
           path: /park
           method: post
+  getPark:
+    handler: src/handlers.getPark
+    events:
+      - httpApi:
+          path: /park/{id}
+          method: get
 
 plugins: -serverless-plugin-typescript
 

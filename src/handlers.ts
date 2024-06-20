@@ -85,3 +85,36 @@ const handleError = (error: unknown) => {
 
   throw error;
 };
+
+const fetchParkById = async (id: string) => {
+  const output = await docClient
+    .get({
+      TableName: tableName,
+      Key: {
+        parkId: id,
+      },
+    })
+    .promise();
+
+  if (!output.Item) {
+    throw new HttpError(404, { error: 'Park not found' });
+  }
+
+  return output.Item;
+};
+
+export const getPark = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  try {
+    const park = await fetchParkById(event?.pathParameters?.id as string);
+
+    return {
+      statusCode: 200,
+      headers,
+      body: JSON.stringify(park),
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};
