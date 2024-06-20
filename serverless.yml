@@ -5,14 +5,11 @@ app: state-parks-api
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: state-parks-api
 
-stages:
-  default:
-    params:
-      tableName: 'users-table-${sls:stage}'
-
 provider:
   name: aws
   runtime: nodejs20.x
+  lambdaHashingVersion: 20201221
+  region: us-west-2
   iam:
     role:
       statements:
@@ -25,26 +22,32 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:DeleteItem
           Resource:
-            - Fn::GetAtt: [UsersTable, Arn]
+            - Fn::GetAtt: [ParksTable, Arn]
   environment:
     USERS_TABLE: ${param:tableName}
 
 functions:
-  api:
-    handler: handler.handler
+  createPark:
+    handler: src/handler.createPark
     events:
-      - httpApi: '*'
+      - httpApi:
+        path: /park
+        method: post
+
+plugins: -serverless-plugin-typescript
 
 resources:
   Resources:
-    UsersTable:
+    ParksTable:
       Type: AWS::DynamoDB::Table
       Properties:
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
         AttributeDefinitions:
-          - AttributeName: userId
+          - AttributeName: parkId
             AttributeType: S
         KeySchema:
-          - AttributeName: userId
+          - AttributeName: parkId
             KeyType: HASH
-        BillingMode: PAY_PER_REQUEST
-        TableName: ${param:tableName}
+        TableName: ParksTable
