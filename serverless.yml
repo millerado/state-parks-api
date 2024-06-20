@@ -15,24 +15,17 @@ provider:
       statements:
         - Effect: Allow
           Action:
-            - dynamodb:Query
-            - dynamodb:Scan
-            - dynamodb:GetItem
             - dynamodb:PutItem
-            - dynamodb:UpdateItem
-            - dynamodb:DeleteItem
           Resource:
             - Fn::GetAtt: [ParksTable, Arn]
-  environment:
-    USERS_TABLE: ${param:tableName}
 
 functions:
   createPark:
-    handler: src/handler.createPark
+    handler: src/handlers.createPark
     events:
       - httpApi:
-        path: /park
-        method: post
+          path: /park
+          method: post
 
 plugins: -serverless-plugin-typescript
 
