@@ -179,18 +179,18 @@ export const deletePark = async (
   }
 };
 
-// export const listPark = async (
-//   event: APIGatewayProxyEvent
-// ): Promise<APIGatewayProxyResult> => {
-//   const output = await docClient
-//     .scan({
-//       TableName: tableName,
-//     })
-//     .promise();
+export const listPark = async (
+  event: APIGatewayProxyEvent
+): Promise<APIGatewayProxyResult> => {
+  const output = await docClient
+    .scan({
+      TableName: tableName,
+    })
+    .promise();
 
-//   return {
-//     statusCode: 200,
-//     headers,
-//     body: JSON.stringify(output.Items),
-//   };
-// };
+  return {
+    statusCode: 200,
+    headers,
+    body: JSON.stringify(output.Items),
+  };
+};

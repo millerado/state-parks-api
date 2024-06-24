@@ -1,7 +1,7 @@
 # "org" ensures this Service is used with the correct Serverless Framework Access Key.
-org: sethmiller
+# org: sethmiller
 # "app" enables Serverless Framework Dashboard features and sharing them with other Services.
-app: state-parks-api
+# app: state-parks-api
 # "service" is the name of this project. This will also be added to your AWS resource names.
 service: state-parks-api
 
@@ -47,12 +47,12 @@ functions:
       - httpApi:
           path: /park/{id}
           method: delete
-#  listPark:
-#    handler: src/handlers.listPark
-#    events:
-#      - httpApi:
-#          path: /parks
-#          method: get
+  listPark:
+    handler: src/handlers.listPark
+    events:
+      - httpApi:
+          path: /parks
+          method: get
 
 plugins: -serverless-plugin-typescript
 
